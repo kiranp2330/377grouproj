@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspiring Quotes</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        #topic-select {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #quote-container {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+        #quote-content {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        #quote-author {
+            font-style: italic;
+            color: #777;
+        }
+        .loading {
+            font-style: italic;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Inspiring Quotes</h1>
+        <select id="topic-select">
+            <option value="wisdom">Wisdom</option>
+            <option value="happiness">Happiness</option>
+            <option value="life">Life</option>
+            <option value="motivation">Motivation</option>
+            <option value="success">Success</option>
+            <option value="love">Love</option>
+            <option value="technology">Technology</option>
+        </select>
+        <button id="get-quote-btn">Get Quote</button>
+        <div id="quote-container">
+            <p id="quote-content"></p>
+            <p id="quote-author"></p>
+            <p id="loading-message" class="loading" style="display: none;">Loading quote...</p>
+        </div>
+    </div>
+
+    <script>
+        const topicSelect = document.getElementById('topic-select');
+        const getQuoteBtn = document.getElementById('get-quote-btn');
+        const quoteContentElement = document.getElementById('quote-content');
+        const quoteAuthorElement = document.getElementById('quote-author');
+        const loadingMessage = document.getElementById('loading-message');
+        const quoteContainer = document.getElementById('quote-container');
+
+        async function fetchQuote() {
+            const selectedTopic = topicSelect.value;
+            const apiUrl = `https://api.quotable.io/random?tags=${selectedTopic}`;
+
+            quoteContainer.style.display = 'none';
+            loadingMessage.style.display = 'block';
+            quoteContentElement.textContent = '';
+            quoteAuthorElement.textContent = '';
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                loadingMessage.style.display = 'none';
+                quoteContainer.style.display = 'block';
+                quoteContentElement.textContent = data.content;
+                quoteAuthorElement.textContent = `- ${data.author}`;
+            } catch (error) {
+                console.error('Error fetching quote:', error);
+                loadingMessage.style.display = 'none';
+                quoteContainer.style.display = 'block';
+                quoteContentElement.textContent = 'Failed to fetch a quote. Please try again.';
+                quoteAuthorElement.textContent = '';
+            }
+        }
+
+        getQuoteBtn.addEventListener('click', fetchQuote);
+
+        // Fetch an initial quote when the page loads
+        fetchQuote();
+    </script>
+</body>
+</html>
